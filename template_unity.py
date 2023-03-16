@@ -15,16 +15,16 @@ from mlagents_envs.registry import default_registry
 channel = EngineConfigurationChannel()
 
 ##################### 两种创建环境方式，第一种是unity自带环境，第二种是自己定义环境 ###################
-env_default = ['Basic', '3DBall', '3DBallHard', 'GridWorld', 'Hallway', 'VisualHallway',
-               'CrawlerDynamicTarget', 'CrawlerStaticTarget', 'Bouncer', 'SoccerTwos', 'PushBlock',
-               'VisualPushBlock', 'WallJump', 'Tennis', 'Reacher', 'Pyramids', 'VisualPyramids', 'Walker',
-               'FoodCollector', 'VisualFoodCollector', 'StrikersVsGoalie', 'WormStaticTarget',
-               'WormDynamicTarget']
-env_id = "StrikersVsGoalie"
-env = default_registry[env_id].make(side_channels = [channel])
+# env_default = ['Basic', '3DBall', '3DBallHard', 'GridWorld', 'Hallway', 'VisualHallway',
+#                'CrawlerDynamicTarget', 'CrawlerStaticTarget', 'Bouncer', 'SoccerTwos', 'PushBlock',
+#                'VisualPushBlock', 'WallJump', 'Tennis', 'Reacher', 'Pyramids', 'VisualPyramids', 'Walker',
+#                'FoodCollector', 'VisualFoodCollector', 'StrikersVsGoalie', 'WormStaticTarget',
+#                'WormDynamicTarget']
+# env_id = "StrikersVsGoalie"
+# env = default_registry[env_id].make(side_channels = [channel])
 
 
-#env = UnityEnvironment(file_name='StrickerVSGoalie_server_Linux', seed=1, side_channels=[channel])
+env = UnityEnvironment(file_name='JuggleBall', seed=1, side_channels=[channel], no_graphics=False)
 
 ############################################################################################
 channel.set_configuration_parameters(time_scale=1.0, height=1024, width=1920)  # 10倍速渲染
@@ -33,7 +33,7 @@ env.reset() # 所有操作之前一定要reset
 ''' 打印behavior信息 '''
 # We will only consider the first Behavior
 print(len(list(env.behavior_specs)))
-behavior_name = list(env.behavior_specs)[1] # TODO 多agent时list中有多个behavior
+behavior_name = list(env.behavior_specs)[0] # TODO 多agent时list中有多个behavior
 print(f"Name of the behavior : {behavior_name}")
 spec = env.behavior_specs[behavior_name]
 
