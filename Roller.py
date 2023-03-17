@@ -27,11 +27,11 @@ def main():
     T_horizon = opt.T_horizon
     random_seed = opt.seed
     EnvName = 'Roller'
-    isTest = False #TODO opt.isTest
+    isTest = opt.isTest
 
 
     ################################### env set & env info####################################
-    env = gym.make('Roller-v0', env_file = EnvName, time_scale = 1000)
+    env = gym.make('Roller-v0', env_file = EnvName, time_scale = 1)
     env.reset()
 
 
@@ -73,11 +73,14 @@ def main():
         }
 
     ################################## 测试时加载之前的模型 ########################################
-    file_path = "./model/" + EnvName + timenow + "/"
-    if not os.path.exists(file_path): os.mkdir(file_path)
+    if isTest:
+        file_path = "./model/" + EnvName + " 2023-03-16 22_02" + "/"
+    else:
+        file_path = "./model/" + EnvName + timenow + "/"
+        if not os.path.exists(file_path): os.mkdir(file_path)
 
     agent = PPO(**kwargs)
-    if isTest: agent.load(episode=55000, file_path=file_path)    # 测试加载模型
+    if isTest: agent.load(episode=105000, file_path=file_path)    # 测试加载模型
     ################################## ################ ########################################
 
 
@@ -117,6 +120,7 @@ def main():
             s_next, reward, done, info = env.step(action_adapter(action))# 将action弄到合适的范围之内
 
             agent.put_data((s, action, reward, s_next, log_prob, done))
+            s = s_next
 
 
             # 训练 or 测试

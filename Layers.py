@@ -51,4 +51,4 @@ class Dense(nn.Module):
         self.C1 = nn.Linear()
 
     def forward(self, inp):
-        pass
+        pass # TODO

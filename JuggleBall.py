@@ -17,7 +17,7 @@ def action_adapter(ac):
     action = ac
     if isinstance(ac, list):
         action = np.array(ac)
-    action = (action - 0.5) * 2
+    action = (action-0.5) * 2
     return action
 def main():
     write = opt.write
@@ -27,19 +27,19 @@ def main():
     T_horizon = opt.T_horizon
     random_seed = opt.seed
     EnvName = 'JuggleBall'
-    isTest = False #TODO opt.isTest
+    isTest = False # TODO opt.isTest
 
 
     ################################### env set & env info####################################
-    env = gym.make('JuggleBall-v0', env_file = EnvName, time_scale = 1000)
+    env = gym.make('JuggleBall-v0', env_file = EnvName, time_scale = 100)
     env.reset()
 
 
 
     ######################## 保存环境信息，创建保存文件夹 #########################################
-    timenow = str(datetime.now())[0:-10]
-    timenow = ' ' + timenow[0:13] + '_' + timenow[-2::]
     if write:
+        timenow = str(datetime.now())[0:-10]
+        timenow = ' ' + timenow[0:13] + '_' + timenow[-2::]
         writepath = 'runs/{}'.format(EnvName) + timenow
         if os.path.exists(writepath): shutil.rmtree(writepath)
         writer = SummaryWriter(log_dir=writepath)
@@ -73,12 +73,14 @@ def main():
         }
 
     ################################## 测试时加载之前的模型 ########################################
-    file_path = "./model/" + EnvName + timenow + "/"
-    if not os.path.exists(file_path): os.mkdir(file_path)
-
+    if isTest:
+        file_path = "./model/" + EnvName + " 2023-03-16 22_02" + "/"
+    else:
+        file_path = "./model/" + EnvName + timenow + "/"
+        if not os.path.exists(file_path): os.mkdir(file_path)
 
     agent = PPO(**kwargs)
-    if isTest: agent.load(episode=55000, file_path=file_path)    # 测试加载模型
+    if isTest: agent.load(episode=105000, file_path=file_path)    # 测试加载模型
     ################################## ################ ########################################
 
 
@@ -116,7 +118,9 @@ def main():
             # step
             s_next, reward, done, info = env.step(action_adapter(action))# 将action弄到合适的范围之内
 
+            # push transition into replaybuffer
             agent.put_data((s, action, reward, s_next, log_prob, done))
+            s = s_next
 
 
             # 训练 or 测试
